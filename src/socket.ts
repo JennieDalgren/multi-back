@@ -9,8 +9,7 @@ const EVENTS = {
     SEND_MESSAGE: 'SEND_MESSAGE',
   },
   SERVER: {
-    USERS: 'USERS',
-    PULSE: 'PULSE'
+    USERS: 'USERS'
   },
 }
 
@@ -19,12 +18,6 @@ const users: any[] = []
 
 function socket({io}: {io: Server}){
   logger.info('sockets enabled')
-
-  setInterval(pulse, 1000);
-
-  function pulse() {
-    io.sockets.emit(EVENTS.SERVER.PULSE, users);
-  }
 
   io.on(EVENTS.connection, (socket: Socket) => {
     logger.info(`User connected with id ${socket.id}`)
@@ -46,6 +39,7 @@ function socket({io}: {io: Server}){
       }
       users.push(user)
 
+      socket.emit(EVENTS.SERVER.USERS, users)
     })
 
     /*
@@ -59,6 +53,8 @@ function socket({io}: {io: Server}){
         }
         return user
       })  
+
+      socket.emit(EVENTS.SERVER.USERS, users)
     })
 
     
